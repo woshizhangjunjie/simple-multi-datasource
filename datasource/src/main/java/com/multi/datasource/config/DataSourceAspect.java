@@ -29,18 +29,20 @@ public class DataSourceAspect implements Ordered {
         Method method = signature.getMethod();
 
         DataSource ds = method.getAnnotation(DataSource.class);
+        String value;
         if(ds == null){
-            DynamicDataSource.setDataSource(DataSourceNames.FIRST);
+            value = DataSourceNames.FIRST;
             logger.debug("set datasource is " + DataSourceNames.FIRST);
         }else {
-            DynamicDataSource.setDataSource(ds.name());
+            value = ds.name();
             logger.debug("set datasource is " + ds.name());
         }
 
+        DynamicContextHolder.push(value);
         try {
             return point.proceed();
         } finally {
-            DynamicDataSource.clearDataSource();
+            DynamicContextHolder.poll();
             logger.debug("clean datasource");
         }
     }
