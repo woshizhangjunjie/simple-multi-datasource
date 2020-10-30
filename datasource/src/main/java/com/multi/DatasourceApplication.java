@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.spring.annotation.MapperScan;
 
+import java.sql.SQLException;
+
 @RestController
 @MapperScan(basePackages = "com.multi.datasource.mapper")
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})//不屏蔽数据源会出现依赖循环
@@ -23,7 +25,7 @@ public class DatasourceApplication {
     private MyTest2Service myTestService;
 
     @RequestMapping(value = "test", method = RequestMethod.POST)
-    public void test() {
+    public void test() throws SQLException {
         myTestService.datasource();
     }
 

@@ -7,10 +7,14 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
+import java.sql.Connection;
 
 
 @Aspect
@@ -20,11 +24,14 @@ public class DataSourceAspect implements Ordered {
 
     @Pointcut("@annotation(com.multi.datasource.config.DataSource)")
     public void dataSourcePointCut() {
-
     }
+
+    @Autowired
+    private javax.sql.DataSource dataSource;
 
     @Around("dataSourcePointCut()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
+
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
 
@@ -39,6 +46,9 @@ public class DataSourceAspect implements Ordered {
         }
 
         DynamicContextHolder.push(value);
+        //代理connection
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        MultiTransactionalHolder.add(connection);
         try {
             return point.proceed();
         } finally {
