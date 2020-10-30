@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 
 /**
  * 代理datasource，做事务的统一提交或回滚
- *
- * @author Mr Li
  */
 public class DatasourceProxy implements DataSource {
 
