@@ -22,6 +22,7 @@ public class ConnectionProxy implements Connection {
 
     private Connection connection;
 
+
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         connection.setAutoCommit(false);

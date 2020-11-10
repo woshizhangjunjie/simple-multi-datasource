@@ -32,14 +32,14 @@ public class MultiTransactionalAspect implements Ordered {
             proceed = point.proceed();
         } catch (Exception e) {
             List<Connection> connections = MultiTransactionalHolder.get();
-            for (Connection connection1 : connections) {
-                connection1.rollback();
+            for (Connection c : connections) {
+                c.rollback();
             }
             throw e;
         }
         List<Connection> connections = MultiTransactionalHolder.get();
-        for (Connection connection1 : connections) {
-            connection1.commit();
+        for (Connection c : connections) {
+            c.commit();
         }
         return proceed;
     }
